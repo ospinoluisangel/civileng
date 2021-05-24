@@ -1,4 +1,6 @@
 # civileng
+El algoritmo fue escrito usando c++
+
 tenga en cuenta que : 
 Flujo laminar= Re<2300 
 Flujo intermedio=2300<Re<4000 
