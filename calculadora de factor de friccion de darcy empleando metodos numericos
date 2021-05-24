@@ -1,0 +1,146 @@
+#include <iostream> // todaas estas son las librerias
+#include <cmath> 
+#include <iomanip> 
+#include <string>
+#include<math.h>
+#include <cstdlib>
+#include <Windows.h>
+
+
+
+using namespace std;
+
+class factordefricciondedarcy {
+public:
+	void getData()
+	{
+		cout << "\t calculadora de factor de friccion de darcy \t"<<endl;
+		cout <<"\t \t by: Ingeniero Luis Angel Ospino\t \t" <<endl;
+		cout << "\t Antes de continuar tenga en cuenta que :"<<endl;
+		cout << "Flujo laminar= Re<2300" << endl;
+		cout << "Flujo intermedio=2300<Re<4000" << endl;
+		cout << "Flujo turbulento=Re>4000" << endl;
+		cout << endl;
+		cout << "Si el numero de reynolds que usted tiene se encuentra en el rango intermedio"<<endl;
+		cout << "debera cambiar la tasa de flujo o diametro del tubo para hacer que el flujo " << endl;
+		cout << "sea en definitiva laminar o turbulento. Entonces sera posible realizar analisis" << endl;
+		cout << "mas precisos. " << endl;
+		cout << "\t"<<endl;
+		cout << "las ecuaciones usadas en este programa fueron:" << endl;
+		cout << " Hagen-Poiseuille  para flujo laminar" << endl;
+		cout << " Colebrook-White  para flujo turbulento" << endl;
+		cout << "\t" << endl;
+		cout << "por favor digite su numero de reynolds =";
+		cin >> rex1;
+
+
+		if (2300>rex1)
+		{
+			cout << "El flujo digitado anterior mente es laminar " << endl;
+			cout << "\t" << endl;
+			flujolaminar = 64 / rex1;
+			cout << "\n el flujo laminar es =" << flujolaminar << endl;
+			cout << "\t" << endl;
+			cout << "\n presione una tecla para cerrar" << endl;
+			system("PAUSE");
+
+			return;
+		}
+
+		cout << "\t" << endl;
+		cout << "su flujo es turbulento" << endl;
+		cout << "por favor digite el factor de friccion que desea iterar ="<<endl;
+		cin >> fac;
+		cout << "\t" << endl;
+		xa = 1 / pow(fac, 0.5);
+		cout << "\t" << endl;
+		cout << "digite diametro interno (m)=";
+		cout << "\t" << endl;
+		cin >> dint;
+		cout << "\t" << endl;
+		cout << "por favor digite su rugosidad relativa (m)="<<endl;
+		cout << "\t" << endl;
+		cin >> epsilonR;
+		cout << "\t" << endl;
+     	cout <<"  f "<< "\t" <<" x "<< "\t" << "f(x) "<< "\t" <<" fp(x) "<<" xi+1 "<< "\t" << "fi+1" << "\t" << "Error" << endl;
+
+	}
+
+
+
+
+
+
+
+	double f(double fiuno)
+	{
+		return -2 * log10((epsilonR / (3.7 * dint)) + (2.51 / (rex1 * pow(fac, 0.5)))); // aqui esta f(x)
+	}
+	                                                                                      // esta en  f 
+	double f2(double fiuno)
+	{
+		return (-2 / log(10)) * ((2.51 / rex1) / ((epsilonR / (3.7 * dint)) + (2.51 / (rex1 * pow(fac, 0.5))))); // esta es la derivada
+
+
+	}
+
+
+	double findError()  // aqui se calcula el error
+	{
+
+		Error = (fiuno - fac) / fiuno;
+		if (Error < 0)
+			Error = -Error;
+		return Error;
+
+	} 
+
+	void calcxi2()// calculos para la proxima iteraciÃ³n
+	{
+		xi2 = xa - ((f(xa) - xa) / (f2(xa) - 1));
+		fiuno = 1 / pow(xi2, 2);
+
+
+
+	}
+
+	void exchange()// aqui es donde se intercambian los valores en cada iteracion
+	{
+		fac = fiuno;
+		xa = xi2;
+
+	}
+
+	
+	void printTable() //aqui es donde se imprimen los resultados
+	{
+
+		
+		cout.setf(ios::fixed, ios::floatfield);
+		cout.precision(4);
+		
+		cout << fac << "\t" << xa << "\t" << f(xa) << "\t" << f2(xa) << "\t" << xi2 << "\t" << fiuno << "\t" << Error << endl;
+	}
+
+private:
+	double rex1, fac, dint, flujolaminar, fiuno, xa, fx1, fpx1, epsilonR, xi2, Error;
+
+};
+
+int main() {
+
+	factordefricciondedarcy no1;
+	no1.getData();
+
+	double e = 9;
+
+	while (e >= 0.000000009)//tolerancia
+	{
+		no1.calcxi2();
+		e = no1.findError();
+		no1.printTable();
+		no1.exchange();
+	}
+	system("PAUSE");
+	return 0;
+}
